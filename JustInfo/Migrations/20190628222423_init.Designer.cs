@@ -4,14 +4,16 @@ using JustInfo.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JustInfo.Migrations
 {
     [DbContext(typeof(JustInfoDbContext))]
-    partial class JustInfoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190628222423_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,84 +74,6 @@ namespace JustInfo.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.Scrap", b =>
-                {
-                    b.Property<string>("ScrapId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("IdentityId");
-
-                    b.Property<string>("Post")
-                        .IsRequired()
-                        .HasMaxLength(5000);
-
-                    b.HasKey("ScrapId");
-
-                    b.HasIndex("IdentityId");
-
-                    b.ToTable("Scraps");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.ScrapComment", b =>
-                {
-                    b.Property<string>("CommentId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CommentDescription")
-                        .IsRequired()
-                        .HasMaxLength(5000);
-
-                    b.Property<string>("IdentityId");
-
-                    b.Property<string>("ScrapId");
-
-                    b.HasKey("CommentId");
-
-                    b.HasIndex("IdentityId");
-
-                    b.HasIndex("ScrapId");
-
-                    b.ToTable("ScrapComments");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.ScrapCommentLikes", b =>
-                {
-                    b.Property<string>("ScrapCommentLikeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("IdentityId");
-
-                    b.Property<string>("ScrapCommentId");
-
-                    b.Property<string>("UserInfoId");
-
-                    b.HasKey("ScrapCommentLikeId");
-
-                    b.HasIndex("ScrapCommentId");
-
-                    b.HasIndex("UserInfoId");
-
-                    b.ToTable("ScrapCommentLikes");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.ScrapLike", b =>
-                {
-                    b.Property<string>("LikeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("IdentityId");
-
-                    b.Property<string>("ScrapId");
-
-                    b.HasKey("LikeId");
-
-                    b.HasIndex("IdentityId");
-
-                    b.HasIndex("ScrapId");
-
-                    b.ToTable("ScrapLikes");
                 });
 
             modelBuilder.Entity("JustInfo.Domain.Models.UserInfo", b =>
@@ -282,46 +206,6 @@ namespace JustInfo.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.Scrap", b =>
-                {
-                    b.HasOne("JustInfo.Domain.Models.UserInfo", "UserInfo")
-                        .WithMany("Scraps")
-                        .HasForeignKey("IdentityId");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.ScrapComment", b =>
-                {
-                    b.HasOne("JustInfo.Domain.Models.UserInfo", "UserInfo")
-                        .WithMany("ScrapComments")
-                        .HasForeignKey("IdentityId");
-
-                    b.HasOne("JustInfo.Domain.Models.Scrap", "Scrap")
-                        .WithMany("Comments")
-                        .HasForeignKey("ScrapId");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.ScrapCommentLikes", b =>
-                {
-                    b.HasOne("JustInfo.Domain.Models.ScrapComment", "ScrapComment")
-                        .WithMany("ScrapCommentLikes")
-                        .HasForeignKey("ScrapCommentId");
-
-                    b.HasOne("JustInfo.Domain.Models.UserInfo", "UserInfo")
-                        .WithMany()
-                        .HasForeignKey("UserInfoId");
-                });
-
-            modelBuilder.Entity("JustInfo.Domain.Models.ScrapLike", b =>
-                {
-                    b.HasOne("JustInfo.Domain.Models.UserInfo", "UserInfo")
-                        .WithMany("ScrapLikes")
-                        .HasForeignKey("IdentityId");
-
-                    b.HasOne("JustInfo.Domain.Models.Scrap", "Scrap")
-                        .WithMany("ScrapLikes")
-                        .HasForeignKey("ScrapId");
                 });
 
             modelBuilder.Entity("JustInfo.Domain.Models.UserInfo", b =>
