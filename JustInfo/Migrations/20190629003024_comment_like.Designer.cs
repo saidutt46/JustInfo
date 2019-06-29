@@ -4,14 +4,16 @@ using JustInfo.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JustInfo.Migrations
 {
     [DbContext(typeof(JustInfoDbContext))]
-    partial class JustInfoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190629003024_comment_like")]
+    partial class comment_like
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
