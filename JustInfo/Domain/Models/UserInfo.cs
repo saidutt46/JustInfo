@@ -8,6 +8,7 @@ namespace JustInfo.Domain.Models
         public string Id { get; set; }
         public string ProfileName { get; set; }
         public string IdentityId { get; set; }
+        public string Email { get; set; }
 
         public string Location { get; set; }
         public int Gender { get; set; }

@@ -13,6 +13,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using JustInfo.Extensions;
+using JustInfo.Helpers.Mappings;
+using System.Linq;
 
 namespace JustInfo.Controllers
 {
@@ -74,21 +76,20 @@ namespace JustInfo.Controllers
             if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
             await _appDbContext.UserInfo.AddAsync(new UserInfo
-            {
-                IdentityId = userIdentity.Id,
-                Location = model.Location,
-                Gender = model.Gender,
-                ColorTheme = model.ColorTheme,
-                ProfileName = model.ProfileName
-            }
+                {
+                    IdentityId = userIdentity.Id,
+                    Location = model.Location,
+                    Gender = model.Gender,
+                    ColorTheme = model.ColorTheme,
+                    ProfileName = model.ProfileName,
+                    Email = model.Email
+                }
             );
             await _appDbContext.SaveChangesAsync();
 
             var newUser = await _appDbContext.UserInfo.FirstOrDefaultAsync(e => e.IdentityId == userIdentity.Id);
-            newUser.Identity.PasswordHash = null;
-            newUser.Identity.ConcurrencyStamp = null;
-            newUser.Identity.SecurityStamp = null;
-            return new OkObjectResult(newUser);
+            var resposnse = _mapper.Map<UserInfo, UserProfileResponse>(newUser);
+            return Ok(resposnse);
         }
 
         // POST api/auth/login
@@ -107,7 +108,18 @@ namespace JustInfo.Controllers
             }
 
             var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
-            return new OkObjectResult(jwt);
+            var user =  await _appDbContext.UserInfo.FirstOrDefaultAsync(u => u.Email == credentials.UserName);
+            if (user == null)
+            {
+                if (jwt != null)
+                {
+                    return Ok(jwt);
+                }
+            }
+            var response = _mapper.Map<UserInfo, UserProfileResponse>(user);
+            return Ok(response);
+
+            
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
