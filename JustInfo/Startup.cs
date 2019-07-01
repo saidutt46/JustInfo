@@ -6,9 +6,11 @@ using FluentValidation.AspNetCore;
 using JustInfo.Domain.Communications;
 using JustInfo.Domain.IRepositories;
 using JustInfo.Domain.Models;
+using JustInfo.Domain.Services;
 using JustInfo.Helpers.AuthHelpers;
 using JustInfo.Persistence.Contexts;
 using JustInfo.Persistence.Repositories;
+using JustInfo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -104,6 +106,10 @@ namespace JustInfo
             });
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
             builder.AddEntityFrameworkStores<JustInfoDbContext>().AddDefaultTokenProviders();
+
+            services.AddScoped<IScrapRepository, ScrapRepository>();
+            services.AddScoped<IScrapService, ScrapService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddAutoMapper();
             services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());

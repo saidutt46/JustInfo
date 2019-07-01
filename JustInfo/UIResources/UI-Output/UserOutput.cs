@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using JustInfo.Domain.Models;
 
-namespace JustInfo.Domain.Models
+namespace JustInfo.UIResources.UIOutput
 {
-    public class UserInfo
+    public class UserOutput
     {
         public string Id { get; set; }
         public string ProfileName { get; set; }
@@ -15,10 +16,8 @@ namespace JustInfo.Domain.Models
         public int ColorTheme { get; set; }
         public DateTime CreatedTime { get; set; }
 
-        public AppUser Identity { get; set; } // Navigation Property
+        //public AppUser Identity { get; set; } // Navigation Property
 
-        public IList<Scrap> Scraps { get; set; } = new List<Scrap>();
-        public IList<ScrapComment> ScrapComments { get; set; } = new List<ScrapComment>();
-        public IList<ScrapLike> ScrapLikes { get; set; } = new List<ScrapLike>();
+        //public IList<Scrap> Scraps { get; set; } = new List<Scrap>();
     }
 }

@@ -8,6 +8,7 @@ namespace JustInfo.Domain.IRepositories
     public interface IScrapRepository
     {
         Task<IEnumerable<Scrap>> ListAsync();
+        Task<IEnumerable<Scrap>> ScrapsByUserId(string id);
         Task AddAsync(Scrap scrap);
         Task<Scrap> FindByIdAsync(int id);
         void Update(Scrap scrap);

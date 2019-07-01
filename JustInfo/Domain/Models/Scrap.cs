@@ -7,8 +7,10 @@ namespace JustInfo.Domain.Models
     {
         public string ScrapId { get; set; }
         public string Post { get; set; }
+        public DateTime CreatedTime { get; set; }
 
         public string IdentityId { get; set; }
+
         public IList<ScrapComment> Comments { get; set; } = new List<ScrapComment>();
         public IList<ScrapLike> ScrapLikes { get; set; } = new List<ScrapLike>();
         public UserInfo UserInfo { get; set; }

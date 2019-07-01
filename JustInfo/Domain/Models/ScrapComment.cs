@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JustInfo.Domain.Models
 {
@@ -6,6 +7,7 @@ namespace JustInfo.Domain.Models
     {
         public string CommentId { get; set; }
         public string CommentDescription { get; set; }
+        public DateTime CommentTime { get; set; }
 
         public string ScrapId { get; set; }
         public Scrap Scrap { get; set; }

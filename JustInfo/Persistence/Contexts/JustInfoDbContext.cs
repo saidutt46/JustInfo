@@ -19,13 +19,13 @@ namespace JustInfo.Persistence.Contexts
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<UserInfo>().HasMany(p => p.Scraps).WithOne(s => s.UserInfo).HasForeignKey(r => r.IdentityId);
+            builder.Entity<UserInfo>().HasMany(p => p.Scraps).WithOne(s => s.UserInfo);
 
             builder.Entity<Scrap>().HasKey(p => p.ScrapId);
             builder.Entity<Scrap>().HasMany(p => p.Comments).WithOne(s => s.Scrap).HasForeignKey(r => r.ScrapId);
             builder.Entity<Scrap>().Property(p => p.Post).IsRequired();
             builder.Entity<Scrap>().Property(p => p.Post).HasMaxLength(5000);
-            builder.Entity<Scrap>().HasOne(p => p.UserInfo).WithMany(s => s.Scraps).HasForeignKey(f => f.IdentityId);
+            builder.Entity<Scrap>().HasOne(p => p.UserInfo).WithMany(s => s.Scraps);
             builder.Entity<Scrap>().HasMany(l => l.ScrapLikes).WithOne(u => u.Scrap).HasForeignKey(f => f.ScrapId);
                 
 
