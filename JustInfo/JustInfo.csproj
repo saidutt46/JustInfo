@@ -27,4 +27,14 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UIResources\" />
+    <Folder Include="UIResources\UI-Input\" />
+    <Folder Include="UIResources\UI-Output\" />
+    <Folder Include="Services\" />
+    <Folder Include="Domain\Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Persistence\Repositories\UserRepository.cs" />
+  </ItemGroup>
 </Project>

@@ -13,10 +13,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using JustInfo.Extensions;
+using JustInfo.Helpers.Mappings;
+using System.Linq;
+using JustInfo.UIResources.UIOutput;
 
 namespace JustInfo.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("app/[controller]")]
     public class AccountsController : Controller
     {
         private readonly JustInfoDbContext _appDbContext;
@@ -38,11 +41,37 @@ namespace JustInfo.Controllers
         [HttpGet("allusers")]
         public async Task<IActionResult> ListAsync()
         {
-            List<UserInfo> a = await _appDbContext.UserInfo.ToListAsync();
-            return new OkObjectResult(a);
+            List<UserInfo> users = await _appDbContext.UserInfo.ToListAsync();
+            List<UserProfileResponse> appUsers = new List<UserProfileResponse>();
+            foreach (UserInfo user in users)
+            {
+                var convertedUser = _mapper.Map<UserInfo, UserProfileResponse>(user);
+                appUsers.Add(convertedUser);
+            }
+            //users.ConvertAll(new Converter<UserInfo, UserProfileResponse>(users));
+            return new OkObjectResult(appUsers);
         }
 
-        [HttpPost("{id}")]
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetUserById(string id)
+        //{
+        //    UserInfo user = await _appDbContext.UserInfo.FindAsync(id);
+        //    if (user.GetType() != typeof(UserInfo)) {
+        //        return BadRequest();
+        //    }
+        //    var userScraps = await _appDbContext.Scraps.Where(s => s.IdentityId == user.IdentityId).ToListAsync();
+        //    userScraps.ForEach(async (s) =>
+        //    {
+        //        var scrapComments =  await _appDbContext.ScrapComments.Where(u => u.ScrapId == s.ScrapId).ToListAsync();
+        //        var scrapLikes = await _appDbContext.ScrapLikes.Where(l => l.ScrapId == s.ScrapId).ToListAsync();
+        //        s.Comments = scrapComments;
+        //        s.ScrapLikes = scrapLikes;
+        //    });
+        //    user.Scraps = userScraps;
+        //    return Ok(user);
+        //}
+
+        [HttpPost("{id}")]  
         public async Task<IActionResult> Get(int id)
         {
             if (!ModelState.IsValid)
@@ -60,6 +89,27 @@ namespace JustInfo.Controllers
             return new OkObjectResult(item);
         }
 
+        //[HttpPut("update")]
+        //public async Task<IActionResult> UpdateAccount([FromBody] UserProfileResponse user)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState.GetErrorMessages());
+        //    var item = await _appDbContext.UserInfo.FindAsync(user.Id);
+
+        //    if (item.GetType() != typeof(UserInfo))
+        //    {
+        //        return BadRequest();
+        //    }
+        //    var u = _mapper.Map<UserProfileResponse, UserInfo>(user);
+        //    var updatedUser = _appDbContext.UserInfo.Update(u);
+
+        //    //var newUser = await _appDbContext.UserInfo.FirstOrDefaultAsync(e => e.IdentityId == item.IdentityId);
+
+
+        //    return new OkObjectResult(updatedUser);
+        //}
+
+
         [HttpPost("register")]
         public async Task<IActionResult> Post([FromBody]RegistrationViewModel model)
         {
@@ -74,21 +124,20 @@ namespace JustInfo.Controllers
             if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
             await _appDbContext.UserInfo.AddAsync(new UserInfo
-            {
-                IdentityId = userIdentity.Id,
-                Location = model.Location,
-                Gender = model.Gender,
-                ColorTheme = model.ColorTheme,
-                ProfileName = model.ProfileName
-            }
+                {
+                    IdentityId = userIdentity.Id,
+                    Location = model.Location,
+                    Gender = model.Gender,
+                    ColorTheme = model.ColorTheme,
+                    ProfileName = model.ProfileName,
+                    Email = model.Email
+                }
             );
             await _appDbContext.SaveChangesAsync();
 
             var newUser = await _appDbContext.UserInfo.FirstOrDefaultAsync(e => e.IdentityId == userIdentity.Id);
-            newUser.Identity.PasswordHash = null;
-            newUser.Identity.ConcurrencyStamp = null;
-            newUser.Identity.SecurityStamp = null;
-            return new OkObjectResult(newUser);
+            var resposnse = _mapper.Map<UserInfo, UserProfileResponse>(newUser);
+            return Ok(resposnse);
         }
 
         // POST api/auth/login
@@ -107,7 +156,18 @@ namespace JustInfo.Controllers
             }
 
             var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
-            return new OkObjectResult(jwt);
+            var user =  await _appDbContext.UserInfo.FirstOrDefaultAsync(u => u.Email == credentials.UserName);
+            if (user == null)
+            {
+                if (jwt != null)
+                {
+                    return Ok(jwt);
+                }
+            }
+            var response = _mapper.Map<UserInfo, UserProfileResponse>(user);
+            return Ok(response);
+
+            
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)

@@ -4,14 +4,16 @@ using JustInfo.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JustInfo.Migrations
 {
     [DbContext(typeof(JustInfoDbContext))]
-    partial class JustInfoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190629063819_user_email")]
+    partial class user_email
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,19 +81,15 @@ namespace JustInfo.Migrations
                     b.Property<string>("ScrapId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreatedTime");
-
                     b.Property<string>("IdentityId");
 
                     b.Property<string>("Post")
                         .IsRequired()
                         .HasMaxLength(5000);
 
-                    b.Property<string>("UserInfoId");
-
                     b.HasKey("ScrapId");
 
-                    b.HasIndex("UserInfoId");
+                    b.HasIndex("IdentityId");
 
                     b.ToTable("Scraps");
                 });
@@ -104,8 +102,6 @@ namespace JustInfo.Migrations
                     b.Property<string>("CommentDescription")
                         .IsRequired()
                         .HasMaxLength(5000);
-
-                    b.Property<DateTime>("CommentTime");
 
                     b.Property<string>("IdentityId");
 
@@ -164,8 +160,6 @@ namespace JustInfo.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("ColorTheme");
-
-                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("Email");
 
@@ -298,7 +292,7 @@ namespace JustInfo.Migrations
                 {
                     b.HasOne("JustInfo.Domain.Models.UserInfo", "UserInfo")
                         .WithMany("Scraps")
-                        .HasForeignKey("UserInfoId");
+                        .HasForeignKey("IdentityId");
                 });
 
             modelBuilder.Entity("JustInfo.Domain.Models.ScrapComment", b =>

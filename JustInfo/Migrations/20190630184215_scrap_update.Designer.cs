@@ -4,14 +4,16 @@ using JustInfo.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JustInfo.Migrations
 {
     [DbContext(typeof(JustInfoDbContext))]
-    partial class JustInfoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190630184215_scrap_update")]
+    partial class scrap_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,11 +89,9 @@ namespace JustInfo.Migrations
                         .IsRequired()
                         .HasMaxLength(5000);
 
-                    b.Property<string>("UserInfoId");
-
                     b.HasKey("ScrapId");
 
-                    b.HasIndex("UserInfoId");
+                    b.HasIndex("IdentityId");
 
                     b.ToTable("Scraps");
                 });
@@ -298,7 +298,7 @@ namespace JustInfo.Migrations
                 {
                     b.HasOne("JustInfo.Domain.Models.UserInfo", "UserInfo")
                         .WithMany("Scraps")
-                        .HasForeignKey("UserInfoId");
+                        .HasForeignKey("IdentityId");
                 });
 
             modelBuilder.Entity("JustInfo.Domain.Models.ScrapComment", b =>
