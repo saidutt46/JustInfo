@@ -10,6 +10,7 @@ namespace JustInfo.Helpers.Mappings
         public InputToModel()
         {
             CreateMap<ScrapInput, Scrap>();
+            CreateMap<UserProfileResponse, UserInfo>();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace JustInfo.Domain.Services
         Task<IEnumerable<Scrap>> ListAsync();
         Task<IEnumerable<Scrap>> ScrapsByUserId(string id);
         Task<ScrapResponse> SaveAsync(Scrap scrap);
-        Task<ScrapResponse> UpdateAsync(int id, Scrap scrap);
-        Task<ScrapResponse> DeleteAsync(int id);
+        Task<ScrapResponse> UpdateAsync(string id, Scrap scrap);
+        Task<ScrapResponse> DeleteAsync(string id);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JustInfo.Domain.IRepositories;
 using JustInfo.Domain.Models;
+using JustInfo.Helpers.Mappings;
 using JustInfo.Persistence.Contexts;
 
 namespace JustInfo.Persistence.Repositories
@@ -14,9 +15,14 @@ namespace JustInfo.Persistence.Repositories
         {
         }
 
-        public async Task<IEnumerable<Scrap>> UserScraps(string id)
+        public void Update(UserInfo user)
         {
-            return await _context.Scraps.Where(s => s.IdentityId == id);
+            _context.UserInfo.Update(user);
+        }
+
+        public async Task<UserInfo> FindByIdAsync(string id)
+        {
+            return await _context.UserInfo.FindAsync(id);
         }
     }
 }
