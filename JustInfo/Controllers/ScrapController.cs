@@ -60,7 +60,7 @@ namespace JustInfo.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync(int id, [FromBody] ScrapInput scrap)
+        public async Task<IActionResult> PutAsync(string id, [FromBody] ScrapInput scrap)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.GetErrorMessages());
@@ -76,7 +76,7 @@ namespace JustInfo.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             var result = await _scrapService.DeleteAsync(id);
 

@@ -47,7 +47,7 @@ namespace JustInfo.Services
             }
         }
 
-        public async Task<ScrapResponse> UpdateAsync(int id, Scrap scrap)
+        public async Task<ScrapResponse> UpdateAsync(string id, Scrap scrap)
         {
             var existingScrap = await _scrapRepository.FindByIdAsync(id);
 
@@ -70,7 +70,7 @@ namespace JustInfo.Services
             }
         }
 
-        public async Task<ScrapResponse> DeleteAsync(int id)
+        public async Task<ScrapResponse> DeleteAsync(string id)
         {
             var existingScrap = await _scrapRepository.FindByIdAsync(id);
 

@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using JustInfo.Domain.IRepositories;
 using JustInfo.Domain.Models;
 using JustInfo.Helpers.AuthHelpers;
@@ -14,8 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using JustInfo.Extensions;
 using JustInfo.Helpers.Mappings;
-using System.Linq;
-using JustInfo.UIResources.UIOutput;
+using JustInfo.Domain.Services;
 
 namespace JustInfo.Controllers
 {
@@ -27,15 +25,18 @@ namespace JustInfo.Controllers
         private readonly IMapper _mapper;
         private readonly IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
+        private readonly IUserService _userService;
 
         public AccountsController(UserManager<AppUser> userManager, IJwtFactory jwtFactory,
-            IMapper mapper, JustInfoDbContext appDbContext, IOptions<JwtIssuerOptions> jwtOptions)
+            IMapper mapper, JustInfoDbContext appDbContext, IOptions<JwtIssuerOptions> jwtOptions,
+            IUserService userService)
         {
             _userManager = userManager;
             _mapper = mapper;
             _appDbContext = appDbContext;
             _jwtFactory = jwtFactory;
             _jwtOptions = jwtOptions.Value;
+            _userService = userService;
         }
 
         [HttpGet("allusers")]
@@ -51,25 +52,6 @@ namespace JustInfo.Controllers
             //users.ConvertAll(new Converter<UserInfo, UserProfileResponse>(users));
             return new OkObjectResult(appUsers);
         }
-
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetUserById(string id)
-        //{
-        //    UserInfo user = await _appDbContext.UserInfo.FindAsync(id);
-        //    if (user.GetType() != typeof(UserInfo)) {
-        //        return BadRequest();
-        //    }
-        //    var userScraps = await _appDbContext.Scraps.Where(s => s.IdentityId == user.IdentityId).ToListAsync();
-        //    userScraps.ForEach(async (s) =>
-        //    {
-        //        var scrapComments =  await _appDbContext.ScrapComments.Where(u => u.ScrapId == s.ScrapId).ToListAsync();
-        //        var scrapLikes = await _appDbContext.ScrapLikes.Where(l => l.ScrapId == s.ScrapId).ToListAsync();
-        //        s.Comments = scrapComments;
-        //        s.ScrapLikes = scrapLikes;
-        //    });
-        //    user.Scraps = userScraps;
-        //    return Ok(user);
-        //}
 
         [HttpPost("{id}")]  
         public async Task<IActionResult> Get(int id)
@@ -88,26 +70,6 @@ namespace JustInfo.Controllers
 
             return new OkObjectResult(item);
         }
-
-        //[HttpPut("update")]
-        //public async Task<IActionResult> UpdateAccount([FromBody] UserProfileResponse user)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState.GetErrorMessages());
-        //    var item = await _appDbContext.UserInfo.FindAsync(user.Id);
-
-        //    if (item.GetType() != typeof(UserInfo))
-        //    {
-        //        return BadRequest();
-        //    }
-        //    var u = _mapper.Map<UserProfileResponse, UserInfo>(user);
-        //    var updatedUser = _appDbContext.UserInfo.Update(u);
-
-        //    //var newUser = await _appDbContext.UserInfo.FirstOrDefaultAsync(e => e.IdentityId == item.IdentityId);
-
-
-        //    return new OkObjectResult(updatedUser);
-        //}
 
 
         [HttpPost("register")]
@@ -168,6 +130,22 @@ namespace JustInfo.Controllers
             return Ok(response);
 
             
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAsync(string id, [FromBody] UserProfileResponse user)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.GetErrorMessages());
+
+            var convertUser = _mapper.Map<UserProfileResponse, UserInfo>(user);
+            var result = await _userService.UpdateAsync(id, convertUser);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            var UserOutput = _mapper.Map<UserInfo, UserProfileResponse>(result.User);
+            return Ok(UserOutput);
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)

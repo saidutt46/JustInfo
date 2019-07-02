@@ -30,7 +30,7 @@ namespace JustInfo.Persistence.Repositories
             await _context.Scraps.AddAsync(Scrap);
         }
 
-        public async Task<Scrap> FindByIdAsync(int id)
+        public async Task<Scrap> FindByIdAsync(string id)
         {
             return await _context.Scraps.FindAsync(id);
         }

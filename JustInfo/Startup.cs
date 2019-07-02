@@ -108,7 +108,9 @@ namespace JustInfo
             builder.AddEntityFrameworkStores<JustInfoDbContext>().AddDefaultTokenProviders();
 
             services.AddScoped<IScrapRepository, ScrapRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IScrapService, ScrapService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddAutoMapper();

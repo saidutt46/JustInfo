@@ -34,7 +34,4 @@
     <Folder Include="Services\" />
     <Folder Include="Domain\Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Persistence\Repositories\UserRepository.cs" />
-  </ItemGroup>
 </Project>

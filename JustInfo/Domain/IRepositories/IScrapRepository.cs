@@ -10,7 +10,7 @@ namespace JustInfo.Domain.IRepositories
         Task<IEnumerable<Scrap>> ListAsync();
         Task<IEnumerable<Scrap>> ScrapsByUserId(string id);
         Task AddAsync(Scrap scrap);
-        Task<Scrap> FindByIdAsync(int id);
+        Task<Scrap> FindByIdAsync(string id);
         void Update(Scrap scrap);
         void Remove(Scrap scrap);
     }
